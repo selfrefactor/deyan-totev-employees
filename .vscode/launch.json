@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+		{
+      "type": "node",
+      "request": "launch",
+      "name": "Test File(Current)",
+      "autoAttachChildProcesses": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+     	"args": [
+        "run",
+        "${fileBasenameNoExtension}"
+      ],
+      "smartStep": true,
+      "console": "integratedTerminal"
+    },
+		{
+      "name": "Lint File(Script)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/tasks/lint/lint-files.js",
+      "args": ["${workspaceFolder}/src/main.tsx"],
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+  ]
+}

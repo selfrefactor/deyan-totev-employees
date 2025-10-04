@@ -1,0 +1,6 @@
+{
+	"lintExtensions": [
+		"ts",
+		"tsx"
+	]
+}
