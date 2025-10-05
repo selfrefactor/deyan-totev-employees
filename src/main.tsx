@@ -10,7 +10,6 @@ import {
 } from './modules/settings.ts'
 import { Storage } from './modules/storage.ts'
 import './styles/style.css'
-import { SharedLayout } from './shared-components/SharedLayout.tsx'
 
 const initialAppMode = Storage.getAppMode()
 const initialThemeMode = Storage.getColorTheme()
@@ -64,13 +63,15 @@ function WholeApp() {
     >
       <BrowserRouter>
         <Routes>
-          <Route element={<SharedLayout sidebarOpen={sidebarOpen} />}>
             <Route element={<MainApp />} path='/' />
-          </Route>
         </Routes>
       </BrowserRouter>
     </SettingsContextProvider>
   )
+}
+
+function SharedLayout(props: any){
+	return <div>{props.children}</div>
 }
 
 const rootEl = document.getElementById('root')

@@ -1,36 +1,52 @@
-@import 'tailwindcss';
+/* stylelint-disable-next-line */
+@import "tailwindcss";
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+@custom-variant dark (&:is(.dark *));
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+@theme {
+  --color-primary: #9a9;
+  --color-primary-foreground: #111;
+  --color-secondary: #a66;
+  --color-secondary-foreground: #261;
+  --color-foreground: #a16;
+  --color-input: #aaa;
+  --color-popover: #aaa;
+  --color-background: #ccc;
+  --color-accent: #aa1;
+  --color-destructive: #a11;
+  --color-muted: #981;
+  --color-border: #141;
+}
+
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: #eaeaea;
   }
 }
 
-/*
-Shared initial styles for all pages
- 
-* {
-	box-sizing: border-box;
-}
 body,
 html {
-  height: 100vw;
   padding: 0;
   margin: 0;
   overflow: hidden;
   font-family: "Courier Prime", monospace;
-} 
-	
-*/
+}
+
+@media screen and (width <= 1000px) {
+  .fullscreen-request-overlay {
+    z-index: 1000;
+    width: 10vw;
+    height: 10vh;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.container__outer {
+  height: 100vh;
+}
