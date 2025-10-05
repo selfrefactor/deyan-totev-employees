@@ -1,4 +1,4 @@
-EmpID,employeeName,DateFrom,DateTo,projectID
+EmpID,employeeName,DateFrom,DateTo,ProjectID
 EMP001,Alice,2020-01-01,2020-12-30,Project Alpha
 EMP002,Bob,2020-01-01,2020-12-30,Project Alpha
 EMP003,Charlie,2021-01-01,2021-12-31,Project Beta

@@ -50,7 +50,7 @@ const parseCSV = (csvText: string) => {
 export function MainApp() {
 	const [data, setData] = useState<Employee[]>([])
 	const [filteredData, setFilteredData] = useState<OverlappingDaysResult[]>([])
-	const [isDataCorrect, setIsDataCorrect] = useState<boolean>(false)
+	const [isDataCorrect, setIsDataCorrect] = useState<boolean | null>(null)
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
 		if (file && file.type === 'text/csv') {
@@ -58,7 +58,7 @@ export function MainApp() {
 			reader.onload = (e) => {
 				const csvText = e.target?.result as string
 				const csvData = parseCSV(csvText)
-				console.log('Parsed CSV data:', csvData)
+				console.log('Parsed CSV data:', csvData, mainWorker(csvData.data))
 				setData(csvData.data)
 				setIsDataCorrect(csvData.isDataCorrect)
 				setFilteredData(mainWorker(csvData.data))
@@ -78,29 +78,31 @@ export function MainApp() {
           onChange={handleFileChange}
           className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
         />
-				{!isDataCorrect && <p className='text-red-500'>Data is not correct</p>}
+				{isDataCorrect === false && <p className='text-red-500'>Data is not correct</p>}
       </div>
       
       <div className='flex flex-col items-center justify-center'>
         {isDataCorrect && data.length === 0 && <p className='text-gray-500'>Initial imported data is empty</p>}
         {isDataCorrect && data.length > 0 && filteredData.length === 0 && <p className='text-gray-500'>No overlapping days found</p>}
         {isDataCorrect && filteredData.length > 0 && <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of employees with the most overlapping days.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className='w-[100px]'>Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className='text-right'>Amount</TableHead>
+              <TableHead>Employee ID #1</TableHead>
+              <TableHead>Employee ID #2</TableHead>
+              <TableHead>Project ID</TableHead>
+              <TableHead className='text-right'>Days worked</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className='font-medium'>INV001</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>Credit Card</TableCell>
-              <TableCell className='text-right'>$250.00</TableCell>
-            </TableRow>
+					{filteredData.map((item) => (
+						<TableRow key={item.data.EmpIDs[0]}>
+							<TableCell className='font-medium'>{item.data.EmpIDs[0]}</TableCell>
+							<TableCell>{item.data.EmpIDs[1]}</TableCell>
+							<TableCell>{item.name}</TableCell>
+							<TableCell className='text-right'>{item.data.numberOfDays}</TableCell>
+						</TableRow>
+					))}
           </TableBody>
         </Table>}
       </div>
