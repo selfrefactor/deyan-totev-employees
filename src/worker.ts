@@ -13,7 +13,7 @@ interface EmployeeWithTimePeriod {
   id: string
   periods: { start: string; end: string }[]
 }
-function mergeMember(value: Employee[] | undefined): EmployeeWithTimePeriod[] {
+function attachPeriodsToTeamMember(value: Employee[] | undefined): EmployeeWithTimePeriod[] {
 	if (!value) return []
   const employeeGroups = value.reduce(
     (acc, employee) => {
@@ -35,15 +35,12 @@ function mergeMember(value: Employee[] | undefined): EmployeeWithTimePeriod[] {
   })
 }
 
-export function mainWorker(data: Employee[]): OverlappingDaysResult[] {
+export function getTopCollaborationsBetweenTeamMembers(data: Employee[]): TopCollaborations[] {
 	const result = pipe(
 		data,
 		groupBy(x => x.ProjectID),
-		mapObject((employee) => mergeMember(employee)),
-		mapObject((value, key) => worker(value, key)),
-		tap(x =>{
-			x
-		}),
+		mapObject((employee) => attachPeriodsToTeamMember(employee)),
+		mapObject((value, key) => getTopCollaborations(value, key)),
 		filterObject((value) => value.length > 0),
 		mapObject(head),
 		x => Object.values(x),
@@ -57,13 +54,13 @@ export function mainWorker(data: Employee[]): OverlappingDaysResult[] {
 	return result
 }
 
-export interface OverlappingDaysResult {
-  name: string
+export interface TopCollaborations {
+  companyName: string
   data: { EmpIDs: string[]; numberOfDays: number }
 }
 
-export function worker(value: EmployeeWithTimePeriod[], companyName: string): OverlappingDaysResult[] {
-  const collaborations: OverlappingDaysResult[] = []
+export function getTopCollaborations(value: EmployeeWithTimePeriod[], companyName: string): TopCollaborations[] {
+  const collaborations: TopCollaborations[] = []
 
   for (let i = 0; i < value.length; i++) {
     for (let j = i + 1; j < value.length; j++) {
@@ -83,7 +80,7 @@ export function worker(value: EmployeeWithTimePeriod[], companyName: string): Ov
 
       if (totalCollaborationDays > 0) {
         collaborations.push({
-          name: companyName,
+          companyName,
           data: {
             EmpIDs: [emp1.id, emp2.id],
             numberOfDays: totalCollaborationDays,
@@ -94,10 +91,8 @@ export function worker(value: EmployeeWithTimePeriod[], companyName: string): Ov
   }
 
   return collaborations.sort((a, b) => {
-    if (b.data.numberOfDays !== a.data.numberOfDays) {
-      return b.data.numberOfDays - a.data.numberOfDays
-    }
-    return a.name.localeCompare(b.name)
+    if (b.data.numberOfDays === a.data.numberOfDays) return 0
+		return b.data.numberOfDays > a.data.numberOfDays ? 1 : -1
   })
 }
 

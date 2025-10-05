@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from './shared-components/table'
-import { Employee, mainWorker, OverlappingDaysResult } from './worker'
+import { Employee, getTopCollaborationsBetweenTeamMembers, TopCollaborations } from './worker'
 import { useState } from 'react'
 
 let EXPECTED_HEADERS = ['EmpID', 'ProjectID', 'DateFrom', 'DateTo']
@@ -49,7 +49,7 @@ const parseCSV = (csvText: string) => {
 
 export function MainApp() {
 	const [data, setData] = useState<Employee[]>([])
-	const [filteredData, setFilteredData] = useState<OverlappingDaysResult[]>([])
+	const [topCollaborations, setTopCollaborations] = useState<TopCollaborations[]>([])
 	const [isDataCorrect, setIsDataCorrect] = useState<boolean | null>(null)
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
@@ -58,10 +58,10 @@ export function MainApp() {
 			reader.onload = (e) => {
 				const csvText = e.target?.result as string
 				const csvData = parseCSV(csvText)
-				console.log('Parsed CSV data:', csvData, mainWorker(csvData.data))
+				console.log('Parsed CSV data:', csvData, getTopCollaborationsBetweenTeamMembers(csvData.data))
 				setData(csvData.data)
 				setIsDataCorrect(csvData.isDataCorrect)
-				setFilteredData(mainWorker(csvData.data))
+				setTopCollaborations(getTopCollaborationsBetweenTeamMembers(csvData.data))
 			}
 			reader.readAsText(file)
 		} else if (file) {
@@ -83,8 +83,8 @@ export function MainApp() {
       
       <div className='flex flex-col items-center justify-center'>
         {isDataCorrect && data.length === 0 && <p className='text-gray-500'>Initial imported data is empty</p>}
-        {isDataCorrect && data.length > 0 && filteredData.length === 0 && <p className='text-gray-500'>No overlapping days found</p>}
-        {isDataCorrect && filteredData.length > 0 && <Table>
+        {isDataCorrect && data.length > 0 && topCollaborations.length === 0 && <p className='text-gray-500'>No overlapping days found</p>}
+        {isDataCorrect && topCollaborations.length > 0 && <Table>
           <TableCaption>A list of employees with the most overlapping days.</TableCaption>
           <TableHeader>
             <TableRow>
@@ -95,7 +95,7 @@ export function MainApp() {
             </TableRow>
           </TableHeader>
           <TableBody>
-					{filteredData.map((item) => (
+					{topCollaborations.map((item) => (
 						<TableRow key={item.data.EmpIDs[0]}>
 							<TableCell>{item.data.EmpIDs[0]}</TableCell>
 							<TableCell>{item.data.EmpIDs[1]}</TableCell>
