@@ -1,0 +1,5 @@
+foo,bar,DateFrom,DateTo,ProjectID
+EMP001,Alice,2020-01-01,2020-06-30,Project Alpha
+EMP002,Bob,2020-07-01,2020-12-31,Project Alpha
+EMP003,Charlie,2021-01-01,2021-06-30,Project Beta
+EMP004,David,2021-07-01,2021-12-31,Project Beta
