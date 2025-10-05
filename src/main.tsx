@@ -99,7 +99,7 @@ export function MainApp() {
 						<TableRow key={item.data.EmpIDs[0]}>
 							<TableCell>{item.data.EmpIDs[0]}</TableCell>
 							<TableCell>{item.data.EmpIDs[1]}</TableCell>
-							<TableCell>{item.name}</TableCell>
+							<TableCell>{item.companyName}</TableCell>
 							<TableCell>{item.data.numberOfDays}</TableCell>
 						</TableRow>
 					))}
