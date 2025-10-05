@@ -160,7 +160,7 @@ export function getDateFormat(input: Employee[]): DateFormat{
 		return {yearIndex, monthIndex: 1, dayIndex: 2}
 	}
 
-	return {yearIndex, monthIndex: foundMonthIndex, dayIndex: foundDayIndex}
+	return {yearIndex, monthIndex: foundMonthIndex, dayIndex: foundDayIndex as number}
 }
 
 function normalizeDate(date: string, dateFormat: DateFormat){

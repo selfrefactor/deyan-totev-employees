@@ -9,17 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from './shared-components/table'
-import { Employee, getTopCollaborationsBetweenTeamMembers, TopCollaborations } from './worker'
+import { Employee, getTopCollaborationsBetweenTeamMembers, normalizeDateFormat, TopCollaborations } from './worker'
 import { useState } from 'react'
 
 let EXPECTED_HEADERS = ['EmpID', 'ProjectID', 'DateFrom', 'DateTo']
-
-function fixData(data: Employee[]) : Employee[] {
-	return data.map(item => ({
-		...item,
-		DateTo: item.DateTo === 'NULL' ? new Date().toISOString().split('T')[0] : item.DateTo,
-	}))
-}
 
 const parseCSV = (csvText: string) => {
 	const lines = csvText.split('\n').filter(line => line.trim() !== '')
@@ -27,11 +20,11 @@ const parseCSV = (csvText: string) => {
 	
 	const data = lines.slice(1).map(line => {
 		const values = line.split(',').map(value => value.trim())
-		const row: Record<string, string> = {}
+		const row = {}
 		headers.forEach((header, index) => {
 			row[header] = values[index] || ''
 		})
-		return row
+		return row as Employee
 	})
 	if(
 		!EXPECTED_HEADERS.every(header => headers.includes(header))
@@ -44,7 +37,7 @@ const parseCSV = (csvText: string) => {
 		return { isDataCorrect: true, data: [] }
 	}
 
-	return { isDataCorrect: true, data: fixData(data as unknown as Employee[]) }
+	return { isDataCorrect: true, data}
 }
 
 export function MainApp() {
@@ -58,10 +51,9 @@ export function MainApp() {
 			reader.onload = (e) => {
 				const csvText = e.target?.result as string
 				const csvData = parseCSV(csvText)
-				console.log('Parsed CSV data:', csvData, getTopCollaborationsBetweenTeamMembers(csvData.data))
 				setData(csvData.data)
 				setIsDataCorrect(csvData.isDataCorrect)
-				setTopCollaborations(getTopCollaborationsBetweenTeamMembers(csvData.data))
+				setTopCollaborations(getTopCollaborationsBetweenTeamMembers(normalizeDateFormat(csvData.data)))
 			}
 			reader.readAsText(file)
 		} else if (file) {
