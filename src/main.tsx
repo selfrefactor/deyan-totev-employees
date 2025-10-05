@@ -1,82 +1,52 @@
-import { useReducer } from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
-import { MainApp } from './component.tsx'
-import { getTestData, SettingsContextProvider } from './constants.ts'
-import {
-  type Settings,
-  settingsContextInitialValue,
-} from './modules/settings.ts'
-import { Storage } from './modules/storage.ts'
 import './styles/style.css'
+import { Badge } from './shared-components/badge'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './shared-components/table'
+import { ToggleButton } from './shared-components/toggle-button'
 
-const initialAppMode = Storage.getAppMode()
-const initialThemeMode = Storage.getColorTheme()
-
-type Action =
-  | { payload: number; type: 'setDatabaseLength' }
-  | { payload: string; type: 'setSortingOrder' }
-  | { payload: string; type: 'setThemeMode' }
-
-const reducer = (state: Settings, action: Action): Settings=> {
-  switch (action.type) {
-    case 'setThemeMode':
-      return { ...state, themeMode: action.payload }
-    default:
-      return state
-  }
-}
-
-const initialSettings = {
-  ...settingsContextInitialValue,
-  appMode: initialAppMode,
-  themeMode: initialThemeMode,
-}
-
-function WholeApp() {
-  const [{ appMode, themeMode }, dispatcher] = useReducer(
-    reducer,
-    initialSettings as Settings,
-  )
-  const sidebarOpen = getTestData('sidebarOpen')
-
-  const setAppMode = (x: string)=> {
-    Storage.setAppMode(x)
-    // dispatcher({ payload: x, type: 'setAppMode' })
-  }
-
-  const setThemeMode = (newThemeMode: string)=> {
-    Storage.setColorTheme(newThemeMode)
-    dispatcher({ payload: newThemeMode, type: 'setThemeMode' })
-  }
-
+export function MainApp() {
+  console.log(1)
   return (
-    <SettingsContextProvider
-      value={{
-        ...settingsContextInitialValue,
-        appMode,
-        setAppMode,
-        setThemeMode,
-        themeMode,
-      }}
-    >
-      <BrowserRouter>
-        <Routes>
-            <Route element={<MainApp />} path='/' />
-        </Routes>
-      </BrowserRouter>
-    </SettingsContextProvider>
+    <div>
+      <h1>
+        <div className='text-blue-700'>123</div>
+        <ToggleButton label='foo' checked={false} />
+        <Badge value='dsa' />
+      </h1>
+      <Table>
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className='w-[100px]'>Invoice</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead className='text-right'>Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className='font-medium'>INV001</TableCell>
+            <TableCell>Paid</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell className='text-right'>$250.00</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
   )
-}
-
-function SharedLayout(props: any){
-	return <div>{props.children}</div>
 }
 
 const rootEl = document.getElementById('root')
 if (rootEl) {
-  ReactDOM.createRoot(rootEl).render(<WholeApp />)
+  ReactDOM.createRoot(rootEl).render(<MainApp />)
 } else {
   console.log('root element not found')
 }
