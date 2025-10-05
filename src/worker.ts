@@ -125,8 +125,13 @@ function getOverlapPeriod(
   return null
 }
 
+interface DateFormat {
+	yearIndex: number
+	monthIndex: number
+	dayIndex: number
+}
 
-export function getDateFormat(input: Employee[]){
+export function getDateFormat(input: Employee[]): DateFormat{
 	const yearIndex = input[0].DateFrom.split('-').findIndex(x => x.length === 4)
 
 	let foundMonthIndex: number | null = null
@@ -156,5 +161,21 @@ export function getDateFormat(input: Employee[]){
 	}
 
 	return {yearIndex, monthIndex: foundMonthIndex, dayIndex: foundDayIndex}
+}
+
+function normalizeDate(date: string, dateFormat: DateFormat){
+	if(date === 'NULL') return new Date().toISOString().split('T')[0]
+	const partsOfDate =date.split('-')
+
+	return `${partsOfDate[dateFormat.yearIndex]}-${partsOfDate[dateFormat.monthIndex]}-${partsOfDate[dateFormat.dayIndex]}`
+}
+
+export function normalizeDateFormat(input: Employee[]){
+	const dateFormat = getDateFormat(input)
+	return input.map(item => ({
+		...item,
+		DateFrom: normalizeDate(item.DateFrom, dateFormat),
+		DateTo: normalizeDate(item.DateTo, dateFormat),
+	}))
 }
 

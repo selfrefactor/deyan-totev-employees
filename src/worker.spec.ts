@@ -1,4 +1,4 @@
-import { getTopCollaborationsBetweenTeamMembers, Employee, getDateFormat } from './worker'
+import { getTopCollaborationsBetweenTeamMembers, Employee, getDateFormat, normalizeDateFormat } from './worker'
 
 test('one result', () => {
 	const testInput: Employee[] = [
@@ -266,6 +266,73 @@ test('no overlapping pairs', () => {
   ]
 	let result = getTopCollaborationsBetweenTeamMembers(testInput)
   expect(result.length).toEqual(0)
+})
+
+test('normalizeDateFormat', () => {
+  const testInput: Employee[] = [
+    {
+      EmpID: 'EMP001',
+      employeeName: 'Alice',
+      DateFrom: '01-20-2020',
+      DateTo: '06-20-2020',
+      ProjectID: 'Project Alpha',
+    },
+    {
+      EmpID: 'EMP002',
+      employeeName: 'Bob',
+      DateFrom: '07-20-2020',
+      DateTo: '12-20-2020',
+      ProjectID: 'Project Alpha',
+    },
+    {
+      EmpID: 'EMP003',
+      employeeName: 'Charlie',
+      DateFrom: '01-20-2021',
+      DateTo: '06-20-2021',
+      ProjectID: 'Project Beta',
+    },
+    {
+      EmpID: 'EMP004',
+      employeeName: 'David',
+      DateFrom: '07-20-2021',
+      DateTo: 'NULL',
+      ProjectID: 'Project Beta',
+    },
+  ]
+
+	let result = normalizeDateFormat(testInput)
+	expect(result).toMatchInlineSnapshot(`
+		[
+		  {
+		    "DateFrom": "2020-01-20",
+		    "DateTo": "2020-06-20",
+		    "EmpID": "EMP001",
+		    "ProjectID": "Project Alpha",
+		    "employeeName": "Alice",
+		  },
+		  {
+		    "DateFrom": "2020-07-20",
+		    "DateTo": "2020-12-20",
+		    "EmpID": "EMP002",
+		    "ProjectID": "Project Alpha",
+		    "employeeName": "Bob",
+		  },
+		  {
+		    "DateFrom": "2021-01-20",
+		    "DateTo": "2021-06-20",
+		    "EmpID": "EMP003",
+		    "ProjectID": "Project Beta",
+		    "employeeName": "Charlie",
+		  },
+		  {
+		    "DateFrom": "2021-07-20",
+		    "DateTo": "2025-10-05",
+		    "EmpID": "EMP004",
+		    "ProjectID": "Project Beta",
+		    "employeeName": "David",
+		  },
+		]
+	`)
 })
 
 test('date format - use fallback if no month or day is found', () => {
