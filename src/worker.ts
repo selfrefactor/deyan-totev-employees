@@ -1,4 +1,4 @@
-import { groupBy, head, mapObject, pipe, sort, sortObject } from 'rambda'
+import { filterObject, groupBy, head, mapObject, pipe, sort, sortObject, tap } from 'rambda'
 
 export interface Employee {
   employeeId: string
@@ -39,20 +39,58 @@ function mergeMember(value: Employee[] | undefined): Employeex[] {
 }
 
 export function mainWorker(data: Employee[]): TeamOutput[] {
+	
 	const result = pipe(
 		data,
 		groupBy(x => x.projectName),
 		mapObject((employee) => mergeMember(employee)),
-		mapObject((value, key) => worker(value, key)[0]),
-		Object.values,
+		mapObject((value, key) => worker(value, key)),
+		tap(x =>{
+			x
+		}),
+		filterObject((value) => value.length > 0),
+		mapObject(head),
+		x => Object.values(x),
 		sort((a, b) => {
 			if (b.data.numberOfDays === a.data.numberOfDays) return 0
 			return b.data.numberOfDays > a.data.numberOfDays ? 1 : -1
 		}),
-		head,
+		data => ({data, topResult: head(data)?.data.numberOfDays ?? 0}),
+		({data, topResult}) => topResult === 0 ? [] :data.filter(x => x.data.numberOfDays === topResult),
 	)
 	return result
 }
+
+// export function mainWorker(data: Employee[]): TeamOutput[] {
+// 	function assertTeamMember(value: TeamOutput | null): value is TeamOutput {
+// 		return value !== null
+// 	}
+	
+// 	const result = pipe(
+// 		data,
+// 		groupBy(x => x.projectName),
+// 		mapObject((employee) => mergeMember(employee)),
+// 		mapObject((value, key) => {
+// 			let result = worker(value, key)
+// 			return result.length > 0 ? result[0] : null
+// 		}),
+// 		tap(x =>{
+// 			x
+// 		}),
+// 		filterObject(assertTeamMember),
+// 		tap(x =>{
+// 			x
+// 		}),
+// 		x => Object.values(x),
+// 		sort((a, b) => {
+// 			if (b.data.numberOfDays === a.data.numberOfDays) return 0
+// 			return b.data.numberOfDays > a.data.numberOfDays ? 1 : -1
+// 		}),
+// 		data => ({data, topResult: head(data)?.data.numberOfDays ?? 0}),
+// 		({data, topResult}) => topResult === 0 ? [] :data.filter(x => x.data.numberOfDays === topResult),
+// 	)
+// 	return result
+// }
 
 interface TeamOutput {
   name: string

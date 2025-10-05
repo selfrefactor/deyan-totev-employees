@@ -219,23 +219,9 @@ function mergeMember(value: Employee[] | undefined): Employeex[] {
 
 
 test('teams', () => {
-  const teams = pipe(
-    testData,
-    groupBy(x => x.projectName),
-    mapObject((employee) => mergeMember(employee)),
-    mapObject((value, key) => worker(value, key)[0]),
-		Object.values,
-		sort((a, b) => {
-			if (b.data.numberOfDays === a.data.numberOfDays) return 0
-			return b.data.numberOfDays > a.data.numberOfDays ? 1 : -1
-		}),
-		head,
-  )
 	let result = mainWorker(testData)
-	console.log(result)
+	expect(result.length).toEqual(1)
 })
-
-
 
 
 test('worker', () => {
@@ -272,68 +258,86 @@ test('worker', () => {
 
 // Test case 1: 3 pairs with same top result (all have 365 days collaboration)
 test('3 pairs with same top result', () => {
-  const testInput = [
+  const testInput: Employee[] = [
     {
-      id: 'EMP001',
-      name: 'Alice',
-      periods: [{ start: '2020-01-01', end: '2020-12-31' }], // 365 days
+      employeeId: 'EMP001',
+      employeeName: 'Alice',
+      startDate: '2020-01-01',
+      endDate: '2020-12-30',
+      projectName: 'Project Alpha',
     },
     {
-      id: 'EMP002',
-      name: 'Bob',
-      periods: [{ start: '2020-01-01', end: '2020-12-31' }], // 365 days overlap with Alice
+      employeeId: 'EMP002',
+      employeeName: 'Bob',
+      startDate: '2020-01-01',
+      endDate: '2020-12-31',
+      projectName: 'Project Alpha',
     },
     {
-      id: 'EMP003',
-      name: 'Charlie',
-      periods: [{ start: '2021-01-01', end: '2021-12-31' }], // 365 days
+      employeeId: 'EMP003',
+      employeeName: 'Charlie',
+      startDate: '2021-01-01',
+      endDate: '2021-12-31',
+      projectName: 'Project Beta',
     },
     {
-      id: 'EMP004',
-      name: 'David',
-      periods: [{ start: '2021-01-01', end: '2021-12-31' }], // 365 days overlap with Charlie
+      employeeId: 'EMP004',
+      employeeName: 'David',
+      startDate: '2021-01-01',
+      endDate: '2021-12-31',
+      projectName: 'Project Beta',
     },
     {
-      id: 'EMP005',
-      name: 'Eve',
-      periods: [{ start: '2022-01-01', end: '2022-12-31' }], // 365 days
+      employeeId: 'EMP005',
+      employeeName: 'Eve',
+      startDate: '2022-01-01',
+      endDate: '2022-12-31',
+      projectName: 'Project Gamma',
     },
     {
-      id: 'EMP006',
-      name: 'Frank',
-      periods: [{ start: '2022-01-01', end: '2022-12-31' }], // 365 days overlap with Eve
+      employeeId: 'EMP006',
+      employeeName: 'Frank',
+      startDate: '2022-01-01',
+      endDate: '2022-12-31',
+      projectName: 'Project Gamma',
     },
   ]
-  const result = worker(testInput, 'SameTopResult Project')
-  console.log('3 pairs with same top result:', result)
-  // Expected: 3 pairs, each with 365 days collaboration
+	let result = mainWorker(testInput)
+  expect(result.length).toEqual(3)
 })
 
 // Test case 2: No overlapping pairs (no employees worked together)
 test('no overlapping pairs', () => {
-  const testInput = [
+  const testInput: Employee[] = [
     {
-      id: 'EMP001',
-      name: 'Alice',
-      periods: [{ start: '2020-01-01', end: '2020-06-30' }], // Jan-Jun 2020
+      employeeId: 'EMP001',
+      employeeName: 'Alice',
+      startDate: '2020-01-01',
+      endDate: '2020-06-30',
+      projectName: 'Project Alpha',
     },
     {
-      id: 'EMP002',
-      name: 'Bob',
-      periods: [{ start: '2020-07-01', end: '2020-12-31' }], // Jul-Dec 2020 (no overlap)
+      employeeId: 'EMP002',
+      employeeName: 'Bob',
+      startDate: '2020-07-01',
+      endDate: '2020-12-31',
+      projectName: 'Project Alpha',
     },
     {
-      id: 'EMP003',
-      name: 'Charlie',
-      periods: [{ start: '2021-01-01', end: '2021-06-30' }], // Jan-Jun 2021 (no overlap)
+      employeeId: 'EMP003',
+      employeeName: 'Charlie',
+      startDate: '2021-01-01',
+      endDate: '2021-06-30',
+      projectName: 'Project Beta',
     },
     {
-      id: 'EMP004',
-      name: 'David',
-      periods: [{ start: '2021-07-01', end: '2021-12-31' }], // Jul-Dec 2021 (no overlap)
+      employeeId: 'EMP004',
+      employeeName: 'David',
+      startDate: '2021-07-01',
+      endDate: '2021-12-31',
+      projectName: 'Project Beta',
     },
   ]
-  const result = worker(testInput, 'NoOverlap Project')
-  console.log('No overlapping pairs:', result)
-  // Expected: empty array (no collaborations)
+	let result = mainWorker(testInput)
+  expect(result.length).toEqual(0)
 })
