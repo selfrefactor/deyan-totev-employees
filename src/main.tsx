@@ -91,16 +91,16 @@ export function MainApp() {
               <TableHead>Employee ID #1</TableHead>
               <TableHead>Employee ID #2</TableHead>
               <TableHead>Project ID</TableHead>
-              <TableHead className='text-right'>Days worked</TableHead>
+              <TableHead>Days worked</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
 					{filteredData.map((item) => (
 						<TableRow key={item.data.EmpIDs[0]}>
-							<TableCell className='font-medium'>{item.data.EmpIDs[0]}</TableCell>
+							<TableCell>{item.data.EmpIDs[0]}</TableCell>
 							<TableCell>{item.data.EmpIDs[1]}</TableCell>
 							<TableCell>{item.name}</TableCell>
-							<TableCell className='text-right'>{item.data.numberOfDays}</TableCell>
+							<TableCell>{item.data.numberOfDays}</TableCell>
 						</TableRow>
 					))}
           </TableBody>
