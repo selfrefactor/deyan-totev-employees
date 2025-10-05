@@ -5,6 +5,8 @@ export interface Employee {
   DateFrom: string
   DateTo: string
   ProjectID: string
+	employeeName?: string
+	projectName?: string
 }
 
 interface EmployeeWithTimePeriod {
