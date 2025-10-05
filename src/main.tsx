@@ -13,15 +13,26 @@ import {
 import { ToggleButton } from './shared-components/toggle-button'
 
 export function MainApp() {
-  console.log(1)
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				const text = e.target?.result as string
+				console.log(text,2)
+			}
+			reader.readAsText(file)
+		}
+	}
   return (
-    <div>
-      <h1>
-        <div className='text-blue-700'>123</div>
-        <ToggleButton label='foo' checked={false} />
-        <Badge value='dsa' />
-      </h1>
-      <Table>
+    <div className='flex flex-col items-center justify-center h-screen'>
+      
+			<div className='flex flex-col items-center justify-center h-screen'>
+				<input type='file' onChange={handleFileChange} />
+			</div>
+			
+			<div className='flex flex-col items-center justify-center h-screen'>
+				<Table>
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
@@ -40,6 +51,7 @@ export function MainApp() {
           </TableRow>
         </TableBody>
       </Table>
+    </div>
     </div>
   )
 }
