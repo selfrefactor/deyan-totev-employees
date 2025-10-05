@@ -1,25 +1,23 @@
 import { filterObject, groupBy, head, mapObject, pipe, sort, sortObject, tap } from 'rambda'
 
 export interface Employee {
-  employeeId: string
-  employeeName: string
-  startDate: string
-  endDate: string
-  projectName: string
+  EmpID: string
+  DateFrom: string
+  DateTo: string
+  projectID: string
 }
 
-interface Employeex {
+interface EmployeeWithTimePeriod {
   id: string
-  name: string
   periods: { start: string; end: string }[]
 }
-function mergeMember(value: Employee[] | undefined): Employeex[] {
+function mergeMember(value: Employee[] | undefined): EmployeeWithTimePeriod[] {
 	if (!value) return []
-  // Group by employeeId to merge multiple periods for the same employee
+  // Group by EmpID to merge multiple periods for the same employee
   const employeeGroups = value.reduce(
     (acc, employee) => {
-      acc[employee.employeeId] = acc[employee.employeeId] || []
-      acc[employee.employeeId].push(employee)
+      acc[employee.EmpID] = acc[employee.EmpID] || []
+      acc[employee.EmpID].push(employee)
       return acc
     },
     {} as Record<string, Employee[]>,
@@ -28,21 +26,20 @@ function mergeMember(value: Employee[] | undefined): Employeex[] {
   // Transform each employee group into the desired format
   return Object.values(employeeGroups).map(employeeData => {
     return {
-      id: employeeData[0].employeeId,
-      name: employeeData[0].employeeName,
+      id: employeeData[0].EmpID,
       periods: employeeData.map(record => ({
-        start: record.startDate,
-        end: record.endDate,
+        start: record.DateFrom,
+        end: record.DateTo,
       })),
     }
   })
 }
 
-export function mainWorker(data: Employee[]): TeamOutput[] {
+export function mainWorker(data: Employee[]): OverlappingDaysResult[] {
 	
 	const result = pipe(
 		data,
-		groupBy(x => x.projectName),
+		groupBy(x => x.projectID),
 		mapObject((employee) => mergeMember(employee)),
 		mapObject((value, key) => worker(value, key)),
 		tap(x =>{
@@ -61,14 +58,14 @@ export function mainWorker(data: Employee[]): TeamOutput[] {
 	return result
 }
 
-// export function mainWorker(data: Employee[]): TeamOutput[] {
-// 	function assertTeamMember(value: TeamOutput | null): value is TeamOutput {
+// export function mainWorker(data: Employee[]): OverlappingDaysResult[] {
+// 	function assertTeamMember(value: OverlappingDaysResult | null): value is OverlappingDaysResult {
 // 		return value !== null
 // 	}
 	
 // 	const result = pipe(
 // 		data,
-// 		groupBy(x => x.projectName),
+// 		groupBy(x => x.projectID),
 // 		mapObject((employee) => mergeMember(employee)),
 // 		mapObject((value, key) => {
 // 			let result = worker(value, key)
@@ -92,13 +89,13 @@ export function mainWorker(data: Employee[]): TeamOutput[] {
 // 	return result
 // }
 
-interface TeamOutput {
+export interface OverlappingDaysResult {
   name: string
-  data: { employeeIds: string[]; numberOfDays: number }
+  data: { EmpIDs: string[]; numberOfDays: number }
 }
 
-export function worker(value: Employeex[], companyName: string): TeamOutput[] {
-  const collaborations: TeamOutput[] = []
+export function worker(value: EmployeeWithTimePeriod[], companyName: string): OverlappingDaysResult[] {
+  const collaborations: OverlappingDaysResult[] = []
 
   // Generate all pairs of employees (permutations)
   for (let i = 0; i < value.length; i++) {
@@ -122,7 +119,7 @@ export function worker(value: Employeex[], companyName: string): TeamOutput[] {
         collaborations.push({
           name: companyName,
           data: {
-            employeeIds: [emp1.id, emp2.id],
+            EmpIDs: [emp1.id, emp2.id],
             numberOfDays: totalCollaborationDays,
           },
         })
@@ -140,9 +137,9 @@ export function worker(value: Employeex[], companyName: string): TeamOutput[] {
 }
 
 // Helper function to calculate days between dates
-function getDaysBetween(startDate: string, endDate: string): number {
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+function getDaysBetween(DateFrom: string, DateTo: string): number {
+  const start = new Date(DateFrom)
+  const end = new Date(DateTo)
   const diffTime = Math.abs(end.getTime() - start.getTime())
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1 // +1 to include both start and end date
 }
