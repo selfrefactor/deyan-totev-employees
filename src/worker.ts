@@ -125,3 +125,36 @@ function getOverlapPeriod(
   return null
 }
 
+
+export function getDateFormat(input: Employee[]){
+	const yearIndex = input[0].DateFrom.split('-').findIndex(x => x.length === 4)
+
+	let foundMonthIndex: number | null = null
+	let foundDayIndex: number | null = null
+
+
+	for(let i = 0; i < input.length; i++){
+		if(foundMonthIndex !== null) break
+
+		const date = input[i].DateFrom.split('-')
+		const [a,b] = date.filter((_,index) => index !== yearIndex)
+		if(a.length !== 2 || b.length !== 2) continue
+		if(Number(a) > 12){
+			foundMonthIndex = date.indexOf(b)
+			foundDayIndex = date.indexOf(a)
+			break
+		}
+		if(Number(b) > 12){
+			foundMonthIndex = date.indexOf(a)
+			foundDayIndex = date.indexOf(b)
+			break
+		}
+	}
+
+	if(foundMonthIndex === null){
+		return {yearIndex, monthIndex: 1, dayIndex: 2}
+	}
+
+	return {yearIndex, monthIndex: foundMonthIndex, dayIndex: foundDayIndex}
+}
+

@@ -1,4 +1,4 @@
-import { getTopCollaborationsBetweenTeamMembers, Employee } from './worker'
+import { getTopCollaborationsBetweenTeamMembers, Employee, getDateFormat } from './worker'
 
 test('one result', () => {
 	const testInput: Employee[] = [
@@ -267,3 +267,44 @@ test('no overlapping pairs', () => {
 	let result = getTopCollaborationsBetweenTeamMembers(testInput)
   expect(result.length).toEqual(0)
 })
+
+test('date format - use fallback if no month or day is found', () => {
+  const testInput: Employee[] = [
+    {
+      EmpID: 'EMP001',
+      employeeName: 'Alice',
+      DateFrom: '2020-01-01',
+      DateTo: '2020-12-31',
+      ProjectID: 'Project Alpha',
+    },
+  ]
+	expect(getDateFormat(testInput)).toEqual({yearIndex: 0, monthIndex: 1, dayIndex: 2})
+})
+
+test('date format - use month and day if found - case 1', () => {
+  const testInput: Employee[] = [
+    {
+      EmpID: 'EMP001',
+      employeeName: 'Alice',
+      DateFrom: '01-14-2020',
+      DateTo: '2020-12-31',
+      ProjectID: 'Project Alpha',
+    },
+  ]
+  expect(getDateFormat(testInput)).toEqual({yearIndex: 2, monthIndex: 0, dayIndex: 1})
+})
+
+test('date format - use month and day if found - case 2', () => {
+  const testInput: Employee[] = [
+    {
+      EmpID: 'EMP001',
+      employeeName: 'Alice',
+      DateFrom: '2020-01-14',
+      DateTo: '2020-12-31',
+      ProjectID: 'Project Alpha',
+    },
+  ]
+  expect(getDateFormat(testInput)).toEqual({yearIndex: 0, monthIndex: 1, dayIndex: 2})
+})
+
+
