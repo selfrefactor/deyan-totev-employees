@@ -11,7 +11,7 @@ export function SearchInputs(props: {
   const category = useRef<string>('')
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 0])
   const [categoryOptions, setCategoryOptions] = useState<
-    { key: string; label: string; }[]
+    { key: string; label: string }[]
   >([])
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
     fetchData({ category: '', searchText: e.target.value }).then(
@@ -40,7 +40,7 @@ export function SearchInputs(props: {
           ? [parseInt(e.target.value) as number, priceRange[1]]
           : [priceRange[0], parseInt(e.target.value) as number]
       setPriceRange(newValue as [number, number])
-      if (newValue[0] && newValue[1] && newValue[0] <= newValue[1])
+      if (newValue[1] && newValue[0] < newValue[1])
         debouncedPriceRangeChange(newValue as [number, number])
     }
   const { run: debouncedSearch } = useDebounceFn(

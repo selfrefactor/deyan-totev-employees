@@ -1,14 +1,15 @@
-# Explanation
+# Auction App
 
-There was no further info what are possible supported date formats, so I build function that tries to understand the pattern from the data.
+## Vercel
 
-## Test data
+Deployed at https://ui-react-totev.vercel.app/
 
-There are several files part of this repo that can be used for testing purposes:
+## Local development
 
-- **test1.csv** - Comprehensive test data with 25 employee records across multiple projects, testing various collaboration scenarios
-- **test2.csv** - Test case with 3 pairs having the same top collaboration result (365 days each), testing tie-breaking scenarios
-- **test3.csv** - Test case with no overlapping pairs, testing edge case where no employees worked together
-- **test4.csv** - Test case with wrong data
-- **test1-different-date-format.csv** - Same data as test1.csv but with DD-MM-YYYY date format to test date parsing
-- **test1-null.csv** - Test data with NULL values in date fields to test null handling
+`npm run dev`
+
+## Features
+
+- Can filter by search text - it doesn't combine with the other two filter
+
+- Can filter by category and or price range.
