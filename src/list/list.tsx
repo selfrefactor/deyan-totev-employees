@@ -1,8 +1,6 @@
-import { useDebounceFn } from 'ahooks'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { fetchData } from '../modules/fetch-data'
 import {
   Table,
   TableBody,
@@ -12,35 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from '../shared-components/table'
+import { SearchInputs } from './search-inputs'
 
 export function List() {
   const navigate = useNavigate()
   const [data, setData] = useState<AuctionItem[]>([])
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
-    fetchData({ filter: '', searchText: e.target.value }).then(
-      fetchedData=> {
-        setData(fetchedData)
-      },
-    )
-  }
-  const { run: debouncedSearch } = useDebounceFn(
-    (e: React.ChangeEvent<HTMLInputElement>)=> {
-      handleSearchChange(e)
-    },
-    {
-      wait: 500,
-    },
-  )
 
   return (
     <div className='flex flex-col h-screen'>
       <div className='flex items-center justify-center h-1/12'>
-        <div className='w-4/12'>
-          <input
-            className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md p-2'
-            onChange={debouncedSearch}
-            type='text'
-          />
+        <div className='w-9/12'>
+          <SearchInputs setData={setData} />
         </div>
       </div>
 
