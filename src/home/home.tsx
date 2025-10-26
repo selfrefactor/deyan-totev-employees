@@ -30,12 +30,11 @@ export function Home() {
         ),
       )
       setData(result)
-      console.log(result)
     })
   }, [])
 
   return (
-    <div className='flex h-10/12 w-4/5 items-center justify-center flex-wrap'>
+    <div className='flex h-10/12 w-full pl-12 pr-12 flex-wrap'>
       {Object.entries(data).map(([category, items])=> (
         <HomeSection category={category} items={items} key={category} />
       ))}
