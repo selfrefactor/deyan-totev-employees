@@ -13,3 +13,8 @@ Deployed at https://ui-react-totev.vercel.app/
 - Can filter by search text - it doesn't combine with the other two filter
 
 - Can filter by category and or price range.
+
+## Missing core features
+
+- dark mode
+- mobile support
