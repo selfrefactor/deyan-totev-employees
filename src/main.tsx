@@ -5,7 +5,8 @@ import './styles/style.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { Home } from './home/home'
-import { List } from './list'
+import { Item } from './item/item'
+import { List } from './list/list'
 import { SharedLayout } from './shared-layout'
 
 export function MainApp() {
@@ -15,6 +16,7 @@ export function MainApp() {
         <Route element={<SharedLayout />}>
           <Route element={<Home />} path='/' />
           <Route element={<List />} path='/list' />
+          <Route element={<Item />} path='/item/:id' />
         </Route>
       </Routes>
     </BrowserRouter>

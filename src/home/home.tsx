@@ -9,7 +9,7 @@ import {
 } from 'rambda'
 import { useEffect, useState } from 'react'
 
-import { fetchData } from '../fetch-data'
+import { fetchData } from '../modules/fetch-data'
 import { HomeSection } from './section'
 
 export function Home() {

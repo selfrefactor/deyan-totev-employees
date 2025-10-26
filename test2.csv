@@ -1,7 +1,0 @@
-EmpID,employeeName,DateFrom,DateTo,ProjectID
-EMP001,Alice,2020-01-01,2020-12-30,Project Alpha
-EMP002,Bob,2020-01-01,2020-12-30,Project Alpha
-EMP003,Charlie,2021-01-01,2021-12-31,Project Beta
-EMP004,David,2021-01-01,2021-12-31,Project Beta
-EMP005,Eve,2022-01-01,2022-12-31,Project Gamma
-EMP006,Frank,2022-01-01,2022-12-31,Project Gamma
