@@ -32,6 +32,7 @@
     "@radix-ui/react-slot": "1.2.3-rc.1746560904918",
     "@radix-ui/react-switch": "1.2.5-rc.1746560904918",
     "@radix-ui/react-tooltip": "1.2.7-rc.1746560904918",
+    "ahooks": "^3.9.5",
     "dayjs": "1.11.18",
     "helpers-fn": "2.0.0",
     "lucide-react": "0.511.0",
